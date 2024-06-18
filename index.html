@@ -29,7 +29,7 @@
 </head>
 <body>
     <h1>Mechanic Shop Services</h1>
-    <form id="price-form">
+    <form id="price-form" action="https://script.google.com/macros/s/AKfycbxqkgY5c_SA5rEXvH6u_QLr-EdfROEAGVk6CdRYmGASGr-23s5ioMW2adznZixvGGlT/exec" method="POST">
         <label for="mechanic-name">Mechanic:</label>
         <input type="text" id="mechanic-name" name="mechanic-name" required>
         <table id="price-list">
@@ -41,12 +41,12 @@
             <tr>
                 <td>Oil Change</td>
                 <td>$100</td>
-                <td><input type="checkbox" class="service-checkbox" data-price="100"></td>
+                <td><input type="checkbox" class="service-checkbox" name="services" value="Oil Change" data-price="100"></td>
             </tr>
             <tr>
                 <td>Brake Repair</td>
                 <td>$150</td>
-                <td><input type="checkbox" class="service-checkbox" data-price="150"></td>
+                <td><input type="checkbox" class="service-checkbox" name="services" value="Brake Repair" data-price="150"></td>
             </tr>
             <!-- Add more services here as needed -->
         </table>
@@ -75,40 +75,34 @@
 
             document.getElementById('price-form').addEventListener('submit', async (event) => {
                 event.preventDefault();
+                const mechanicName = document.getElementById('mechanic-name').value;
                 const selectedServices = [];
-                checkboxes.forEach(box => {
-                    if (box.checked) {
-                        const service = box.parentElement.parentElement.cells[0].textContent;
-                        selectedServices.push(service);
-                    }
+                document.querySelectorAll('.service-checkbox:checked').forEach(box => {
+                    selectedServices.push(box.value);
                 });
 
-                const mechanicName = document.getElementById('mechanic-name').value;
                 if (mechanicName && selectedServices.length > 0) {
-                    await submitToGoogleSheets(mechanicName, selectedServices, totalPriceElement.textContent);
+                    try {
+                        const response = await fetch(event.target.action, {
+                            method: 'POST',
+                            body: new URLSearchParams(new FormData(event.target))
+                        });
+                        if (response.ok) {
+                            alert('Submitted successfully!');
+                            // Clear form after successful submission if needed
+                            // event.target.reset();
+                        } else {
+                            alert('Failed to submit.');
+                        }
+                    } catch (error) {
+                        console.error('Error submitting form:', error);
+                        alert('Failed to submit.');
+                    }
                 } else {
                     alert('Please enter your name and select at least one service.');
                 }
             });
         });
-
-        async function submitToGoogleSheets(mechanic, services, totalPrice) {
-            const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-            const targetUrl = 'https://script.google.com/macros/s/AKfycbxqkgY5c_SA5rEXvH6u_QLr-EdfROEAGVk6CdRYmGASGr-23s5ioMW2adznZixvGGlT/exec';
-            const response = await fetch(proxyUrl + targetUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ mechanic, services, totalPrice }),
-            });
-
-            if (response.ok) {
-                alert('Submitted successfully!');
-            } else {
-                alert('Failed to submit.');
-            }
-        }
     </script>
 </body>
 </html>
