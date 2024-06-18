@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mechanic Shop Billing</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        form div {
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Mechanic Shop Services</h1>
+    <form id="price-form">
+        <label for="mechanic-name">Mechanic:</label>
+        <input type="text" id="mechanic-name" name="mechanic-name" required>
+        <table id="price-list">
+            <tr>
+                <th>Service</th>
+                <th>Price</th>
+                <th>Select</th>
+            </tr>
+            <tr>
+                <td>Oil Change</td>
+                <td>$100</td>
+                <td><input type="checkbox" class="service-checkbox" data-price="100"></td>
+            </tr>
+            <tr>
+                <td>Brake Repair</td>
+                <td>$150</td>
+                <td><input type="checkbox" class="service-checkbox" data-price="150"></td>
+            </tr>
+            <!-- Add more services here as needed -->
+        </table>
+        <div>
+            <label for="total-price">Total Price: </label>
+            <span id="total-price">$0.00</span>
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const checkboxes = document.querySelectorAll('.service-checkbox');
+            const totalPriceElement = document.getElementById('total-price');
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    let totalPrice = 0;
+                    checkboxes.forEach(box => {
+                        if (box.checked) {
+                            totalPrice += parseFloat(box.getAttribute('data-price'));
+                        }
+                    });
+                    totalPriceElement.textContent = `$${totalPrice.toFixed(2)}`;
+                });
+            });
+
+            document.getElementById('price-form').addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const selectedServices = [];
+                checkboxes.forEach(box => {
+                    if (box.checked) {
+                        const service = box.parentElement.parentElement.cells[0].textContent;
+                        selectedServices.push(service);
+                    }
+                });
+
+                const mechanicName = document.getElementById('mechanic-name').value;
+                if (mechanicName && selectedServices.length > 0) {
+                    await submitToGoogleSheets(mechanicName, selectedServices, totalPriceElement.textContent);
+                } else {
+                    alert('Please enter your name and select at least one service.');
+                }
+            });
+        });
+
+        async function submitToGoogleSheets(mechanic, services, totalPrice) {
+            const response = await fetch('https://script.google.com/macros/s/AKfycbz5v1fSvKCLEnhF7NTiSkpcbJZXXzlBGD7TV9dpHxmVvDOFRO3DbAVxLNJdlMudvwg/exec', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ mechanic, services, totalPrice }),
+            });
+
+            if (response.ok) {
+                alert('Submitted successfully!');
+            } else {
+                alert('Failed to submit.');
+            }
+        }
+    </script>
+</body>
+</html>
