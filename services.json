@@ -1,0 +1,11 @@
+[
+    {
+        "service": "Oil Change",
+        "price": 100
+    },
+    {
+        "service": "Brake Repair",
+        "price": 150
+    }
+    // Add more services as needed
+]
