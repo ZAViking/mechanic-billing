@@ -38,17 +38,7 @@
                 <th>Price</th>
                 <th>Select</th>
             </tr>
-            <tr>
-                <td>Oil Change</td>
-                <td>$100</td>
-                <td><input type="checkbox" class="service-checkbox" name="services" value="Oil Change" data-price="100"></td>
-            </tr>
-            <tr>
-                <td>Brake Repair</td>
-                <td>$150</td>
-                <td><input type="checkbox" class="service-checkbox" name="services" value="Brake Repair" data-price="150"></td>
-            </tr>
-            <!-- Add more services here as needed -->
+            <!-- Services will be loaded here dynamically -->
         </table>
         <div>
             <label for="total-price">Total Price: </label>
@@ -58,16 +48,37 @@
     </form>
     <script>
         const webhookUrl = 'https://discord.com/api/webhooks/1252941907848593491/HvG3yQ85h92n8SBORMgIYuDZlO6e5ljCu3yE-MqIENJL9tNMXzNypq1yL3EGNr0SHptU';
-
-        function calculateTotalPrice() {
-            const checkboxes = document.querySelectorAll('.service-checkbox');
-            let totalPrice = 0;
-            checkboxes.forEach(box => {
-                if (box.checked) {
-                    totalPrice += parseFloat(box.getAttribute('data-price'));
-                }
+        
+        async function loadServices() {
+            const response = await fetch('services.json');
+            const services = await response.json();
+            const priceListTable = document.getElementById('price-list');
+            
+            services.forEach(service => {
+                const row = priceListTable.insertRow();
+                const serviceCell = row.insertCell(0);
+                const priceCell = row.insertCell(1);
+                const selectCell = row.insertCell(2);
+                
+                serviceCell.textContent = service.service;
+                priceCell.textContent = `$${service.price}`;
+                selectCell.innerHTML = `<input type="checkbox" class="service-checkbox" name="services" value="${service.service}" data-price="${service.price}">`;
             });
-            return `$${totalPrice.toFixed(2)}`;
+
+            const checkboxes = document.querySelectorAll('.service-checkbox');
+            const totalPriceElement = document.getElementById('total-price');
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    let totalPrice = 0;
+                    checkboxes.forEach(box => {
+                        if (box.checked) {
+                            totalPrice += parseFloat(box.getAttribute('data-price'));
+                        }
+                    });
+                    totalPriceElement.textContent = `$${totalPrice.toFixed(2)}`;
+                });
+            });
         }
 
         function submitForm() {
@@ -78,7 +89,7 @@
             });
 
             if (mechanicName && selectedServices.length > 0) {
-                const totalPrice = calculateTotalPrice();
+                const totalPrice = document.getElementById('total-price').textContent;
                 const message = {
                     content: `**Mechanic:** ${mechanicName}\n**Services:** ${selectedServices.join(', ')}\n**Total Price:** ${totalPrice}`
                 };
@@ -112,16 +123,7 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const checkboxes = document.querySelectorAll('.service-checkbox');
-            const totalPriceElement = document.getElementById('total-price');
-
-            checkboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', () => {
-                    totalPriceElement.textContent = calculateTotalPrice();
-                });
-            });
-        });
+        document.addEventListener('DOMContentLoaded', loadServices);
     </script>
 </body>
 </html>
