@@ -50,35 +50,39 @@
         const webhookUrl = 'https://discord.com/api/webhooks/1252941907848593491/HvG3yQ85h92n8SBORMgIYuDZlO6e5ljCu3yE-MqIENJL9tNMXzNypq1yL3EGNr0SHptU';
         
         async function loadServices() {
-            const response = await fetch('services.json');
-            const services = await response.json();
-            const priceListTable = document.getElementById('price-list');
-            
-            services.forEach(service => {
-                const row = priceListTable.insertRow();
-                const serviceCell = row.insertCell(0);
-                const priceCell = row.insertCell(1);
-                const selectCell = row.insertCell(2);
+            try {
+                const response = await fetch('services.json');
+                const services = await response.json();
+                const priceListTable = document.getElementById('price-list');
                 
-                serviceCell.textContent = service.service;
-                priceCell.textContent = `$${service.price}`;
-                selectCell.innerHTML = `<input type="checkbox" class="service-checkbox" name="services" value="${service.service}" data-price="${service.price}">`;
-            });
-
-            const checkboxes = document.querySelectorAll('.service-checkbox');
-            const totalPriceElement = document.getElementById('total-price');
-
-            checkboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', () => {
-                    let totalPrice = 0;
-                    checkboxes.forEach(box => {
-                        if (box.checked) {
-                            totalPrice += parseFloat(box.getAttribute('data-price'));
-                        }
-                    });
-                    totalPriceElement.textContent = `$${totalPrice.toFixed(2)}`;
+                services.forEach(service => {
+                    const row = priceListTable.insertRow();
+                    const serviceCell = row.insertCell(0);
+                    const priceCell = row.insertCell(1);
+                    const selectCell = row.insertCell(2);
+                    
+                    serviceCell.textContent = service.service;
+                    priceCell.textContent = `$${service.price}`;
+                    selectCell.innerHTML = `<input type="checkbox" class="service-checkbox" name="services" value="${service.service}" data-price="${service.price}">`;
                 });
-            });
+
+                const checkboxes = document.querySelectorAll('.service-checkbox');
+                const totalPriceElement = document.getElementById('total-price');
+
+                checkboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', () => {
+                        let totalPrice = 0;
+                        checkboxes.forEach(box => {
+                            if (box.checked) {
+                                totalPrice += parseFloat(box.getAttribute('data-price'));
+                            }
+                        });
+                        totalPriceElement.textContent = `$${totalPrice.toFixed(2)}`;
+                    });
+                });
+            } catch (error) {
+                console.error('Error loading services:', error);
+            }
         }
 
         function submitForm() {
