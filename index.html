@@ -7,10 +7,42 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+            margin-bottom: 20px;
+        }
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+        }
+        .tab button:hover {
+            background-color: #ddd;
+        }
+        .tab button.active {
+            background-color: #ccc;
+        }
+        .tabcontent {
+            display: none;
+            padding: 6px 12px;
+            border-top: none;
+        }
+        .table-container {
+            margin-top: 10px;
         }
         table {
             width: 100%;
             border-collapse: collapse;
+            margin-bottom: 10px;
         }
         th, td {
             border: 1px solid #ddd;
@@ -19,84 +51,285 @@
         th {
             background-color: #f2f2f2;
         }
-        form div {
+        .totals {
+            width: 100%;
             margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
         }
-        button {
+        .total-item {
+            flex: 1;
+            min-width: 200px;
+            margin: 10px;
+        }
+        .button {
             padding: 10px 20px;
+            border: none;
+            outline: none;
+            color: white;
+            background-color: #4CAF50;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .highlight {
+            background-color: #ffcccb; /* Light red background for highlighting */
         }
     </style>
 </head>
 <body>
-    <img src="https://media.discordapp.net/attachments/1251301052180074506/1251479639075848242/Original-transparent.png?ex=667400bd&is=6672af3d&hm=08fc7508fbeaa8dac8877c0e8fd3848e212fa7f28df8ec440607f18051e0f552&=&format=webp&quality=lossless&width=592&height=592" alt="">
     <h1>Mechanic Shop Services</h1>
-    <form id="price-form">
-        <label for="mechanic-name">Mechanic:</label>
+    <div class="totals">
+        <div class="total-item">
+            <label>Repairs in Shop Total: </label>
+            <span id="repairs-total">$0.00</span>
+        </div>
+        <div class="total-item">
+            <label>Performance Total: </label>
+            <span id="performance-total">$0.00</span>
+        </div>
+        <div class="total-item">
+            <label>Cosmetics Total: </label>
+            <span id="cosmetics-total">$0.00</span>
+        </div>
+        <div class="total-item">
+            <label>Callouts Total: </label>
+            <span id="callouts-total">$0.00</span>
+        </div>
+        <div class="total-item">
+            <label>Total Billing Amount: </label>
+            <span id="total-billing">$0.00</span>
+        </div>
+    </div>
+
+    <div>
+        <label for="mechanic-name">Select Mechanic:</label>
         <select id="mechanic-name" name="mechanic-name" required>
             <option value="" disabled selected>Select Mechanic</option>
-            <option value="Mechanic 1">Duncan Smokey</option>
-            <option value="Mechanic 2">Kinana Ravencraft</option>
-            <option value="Mechanic 3">Edward Cocaine</option>
-            <option value="Mechanic 4">Jaylin Naidoo</option>
-            <option value="Mechanic 5">Kevin Green</option>
-            <option value="Mechanic 6">Vin Petrol</option>
-            <option value="Mechanic 7">Jack Skywalker</option>
-            <option value="Mechanic 8">Lyra Carter</option>
-            <option value="Mechanic 9">Veronica Harlow</option>
-            <option value="Mechanic 10">Jack Smith</option>
+            <option value="Duncan Smokey">Duncan Smokey</option>
+            <option value="Kinana Ravencraft">Kinana Ravencraft</option>
+            <option value="Edward Cocaine">Edward Cocaine</option>
+            <option value="Jaylin Naidoo">Jaylin Naidoo</option>
+            <option value="Kevin Green">Kevin Green</option>
+            <option value="Vin Petrol">Vin Petrol</option>
+            <option value="Jack Skywalker">Jack Skywalker</option>
+            <option value="Lyra Carter">Lyra Carter</option>
+            <option value="Veronica Harlow">Veronica Harlow</option>
+            <option value="Jack Smith">Jack Smith</option>
         </select>
-        <br>
-        <table id="price-list">
-            <tr>
-                <th>Service</th>
-                <th>Price</th>
-                <th>Select</th>
-            </tr>
-            <!-- Services will be loaded here dynamically -->
-        </table>
-            <br>
-        <div>
-            <label for="total-price">Total Price: </label>
-            <span id="total-price">$0.00</span>
+        <button class="button" type="button" onclick="submitForm()">Submit</button>
+    </div>
+
+    <br>
+
+    <div class="tab">
+        <button class="tablinks active" onclick="openTab(event, 'repairs')">Repairs in Shop</button>
+        <button class="tablinks" onclick="openTab(event, 'performance')">Performance</button>
+        <button class="tablinks" onclick="openTab(event, 'cosmetics')">Cosmetics</button>
+        <button class="tablinks" onclick="openTab(event, 'callouts')">Callouts</button>
+    </div>
+
+    <div id="repairs" class="tabcontent" style="display: block;">
+        <div class="table-container">
+            <table id="repairs-table">
+                <tr>
+                    <th>Service</th>
+                    <th>Price</th>
+                    <th>Select</th>
+                </tr>
+            </table>
         </div>
-        <button type="button" onclick="submitForm()">Submit</button>
-    </form>
+    </div>
+
+    <div id="performance" class="tabcontent">
+        <div class="table-container">
+            <table id="performance-table">
+                <tr>
+                    <th>Service</th>
+                    <th>Price</th>
+                    <th>Select</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div id="cosmetics" class="tabcontent">
+        <div class="table-container">
+            <table id="cosmetics-table">
+                <tr>
+                    <th>Service</th>
+                    <th>Price</th>
+                    <th>Select</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div id="callouts" class="tabcontent">
+        <div class="table-container">
+            <table id="callouts-table">
+                <tr>
+                    <th>Service</th>
+                    <th>Price</th>
+                    <th>Select</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+    
     <script>
         const webhookUrl = 'https://discord.com/api/webhooks/1252941907848593491/HvG3yQ85h92n8SBORMgIYuDZlO6e5ljCu3yE-MqIENJL9tNMXzNypq1yL3EGNr0SHptU';
-        
-        async function loadServices() {
-            try {
-                const response = await fetch('services.json');
-                const services = await response.json();
-                const priceListTable = document.getElementById('price-list');
-                
-                services.forEach(service => {
-                    const row = priceListTable.insertRow();
-                    const serviceCell = row.insertCell(0);
-                    const priceCell = row.insertCell(1);
-                    const selectCell = row.insertCell(2);
-                    
-                    serviceCell.textContent = service.service;
-                    priceCell.textContent = `$${service.price}`;
-                    selectCell.innerHTML = `<input type="checkbox" class="service-checkbox" name="services" value="${service.service}" data-price="${service.price}">`;
-                });
 
-                const checkboxes = document.querySelectorAll('.service-checkbox');
-                const totalPriceElement = document.getElementById('total-price');
+        const repairs = [
+            {"service": "Body Repair","price": 15000},
+            {"service": "Engine Repair","price": 15000},
+            {"service": "Spare Tires","price": 4000},
+            {"service": "Duct Tape","price": 10000},
+            {"service": "Oil Level","price": 2000},
+            {"service": "Axle Shaft","price": 2000},
+            {"service": "Spark Plugs","price": 2000},
+            {"service": "Car Battery","price": 2000},
+            {"service": "Fuel Tank", "price": 2000},
+        ];
+        const performance = [
+            {"service": "Supercharger Turbo", "price": 50000},
+            {"service": "Tier 4 Engine", "price": 80000},
+            {"service": "Tier 3 Transmission", "price": 70000},
+            {"service": "Tier 3 Brakes", "price": 50000},
+            {"service": "Spray", "price": 15000},
+            {"service": "Tint", "price": 15000},
+            {"service": "Neon Controller", "price": 5000},
+            {"service": "Drift Tires", "price": 20000},
+            {"service": "Tier 1 Engine", "price": 20000},
+            {"service": "Tier 2 Engine", "price": 40000},
+            {"service": "Tier 3 Engine", "price": 60000},
+            {"service": "Tier 5 Engine", "price": 80000},
+            {"service": "Tier 1 Transmission", "price": 30000},
+            {"service": "Tier 2 Transmission", "price": 50000},
+            {"service": "Tier 4 Transmission", "price": 70000},
+            {"service": "Tier 1 Brakes", "price": 10000},
+            {"service": "Tier 2 Brakes", "price": 30000},
+            {"service": "Armor (Investigating)", "price": 0},
+            {"service": "Tier 1 Suspension", "price": 25000},
+            {"service": "Tier 2 Suspension", "price": 45000},
+            {"service": "Tier 3 Suspension", "price": 65000},
+            {"service": "Tier 4 Suspension", "price": 85000},
+            {"service": "Bulletproof tires (Investigating)", "price": 0},
+            {"service": "Drive Shaft", "price": 20000},
+            {"service": "Cylinder Head", "price": 20000},
+            {"service": "Battery Cables", "price": 20000},
+            {"service": "Fuel Tank", "price": 20000},
+            {"service": "NOS bottle", "price": 60000},
+            {"service": "NOS Refill", "price": 30000},
+            {"service": "NOS Color injector", "price": 10000}
+        ];
+        const cosmetics = [
+            {"service": "Harness", "price": 20000},
+            {"service": "Xenon", "price": 10000},
+            {"service": "Hood", "price": 15000},
+            {"service": "Roof", "price": 15000},
+            {"service": "Spoiler", "price": 15000},
+            {"service": "Bumper", "price": 15000},
+            {"service": "Skirts", "price": 15000},
+            {"service": "Exhaust", "price": 20000},
+            {"service": "Seats", "price": 15000},
+            {"service": "Livery", "price": 25000},
+            {"service": "Tire smoke", "price": 15000},
+            {"service": "Horn", "price": 10000},
+            {"service": "Internal Cosmetics", "price": 15000},
+            {"service": "Exterior Cosmetics", "price": 15000},
+            {"service": "Custom plates", "price": 15000},
+            {"service": "Underglow", "price": 15000},
+            {"service": "Wheels", "price": 15000},
+            {"service": "Custom Plates", "price": 15000},
+            {"service": "Engine Swope", "price": 20000}
+        ];
+        const callouts = [
+            {"service": "City", "price": 40000},
+            {"service": "Sandy", "price": 60000},
+            {"service": "Paleto", "price": 80000}
+        ];
 
-                checkboxes.forEach(checkbox => {
-                    checkbox.addEventListener('change', () => {
-                        let totalPrice = 0;
-                        checkboxes.forEach(box => {
-                            if (box.checked) {
-                                totalPrice += parseFloat(box.getAttribute('data-price'));
-                            }
-                        });
-                        totalPriceElement.textContent = `$${totalPrice.toFixed(2)}`;
-                    });
-                });
-            } catch (error) {
-                console.error('Error loading services:', error);
+        function loadServices(services, tableId) {
+            const table = document.getElementById(tableId);
+            services.forEach(service => {
+                const row = table.insertRow();
+                const serviceCell = row.insertCell(0);
+                const priceCell = row.insertCell(1);
+                const selectCell = row.insertCell(2);
+
+                serviceCell.textContent = service.service;
+                priceCell.textContent = `$${service.price}`;
+                selectCell.innerHTML = `<input type="checkbox" class="service-checkbox" data-price="${service.price}">`;
+
+                // Highlight specific services
+                if (service.service === "Supercharger Turbo" ||
+                    service.service === "Tier 4 Engine" ||
+                    service.service === "Tier 3 Brakes" ||
+                    service.service === "Tier 3 Transmission" ||
+                    service.service === "Xenon" ||
+                    service.service === "Harness") {
+                    row.classList.add('highlight');
+                }
+            });
+        }
+
+        function calculateTotal(selector, totalElementId) {
+            const checkboxes = document.querySelectorAll(selector);
+            let total = 0;
+            checkboxes.forEach(box => {
+                if (box.checked) {
+                    total += parseFloat(box.getAttribute('data-price'));
+                }
+            });
+            document.getElementById(totalElementId).textContent = `$${total.toFixed(2)}`;
+            return total;
+        }
+
+        function updateTotals() {
+            const repairsTotal = calculateTotal('#repairs-table .service-checkbox', 'repairs-total');
+            const performanceTotal = calculateTotal('#performance-table .service-checkbox', 'performance-total');
+            const cosmeticsTotal = calculateTotal('#cosmetics-table .service-checkbox', 'cosmetics-total');
+            const calloutsTotal = calculateTotal('#callouts-table .service-checkbox', 'callouts-total');
+            const totalBilling = repairsTotal + performanceTotal + cosmeticsTotal + calloutsTotal;
+            document.getElementById('total-billing').textContent = `$${totalBilling.toFixed(2)}`;
+        }
+
+        function openTab(evt, tabName) {
+            // Hide all tab contents
+            const tabcontents = document.getElementsByClassName('tabcontent');
+            for (let i = 0; i < tabcontents.length; i++) {
+                tabcontents[i].style.display = 'none';
+            }
+
+            // Deactivate all tab buttons
+            const tablinks = document.getElementsByClassName('tablinks');
+            for (let i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove('active');
+            }
+
+            // Show the selected tab content and activate the button
+            document.getElementById(tabName).style.display = 'block';
+            evt.currentTarget.classList.add('active');
+
+            // Update totals for the visible tab
+            switch (tabName) {
+                case 'repairs':
+                    updateTotals('#repairs-table .service-checkbox', 'repairs-total');
+                    break;
+                case 'performance':
+                    updateTotals('#performance-table .service-checkbox', 'performance-total');
+                    break;
+                case 'cosmetics':
+                    updateTotals('#cosmetics-table .service-checkbox', 'cosmetics-total');
+                    break;
+                case 'callouts':
+                    updateTotals('#callouts-table .service-checkbox', 'callouts-total');
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -104,13 +337,18 @@
             const mechanicName = document.getElementById('mechanic-name').value;
             const selectedServices = [];
             document.querySelectorAll('.service-checkbox:checked').forEach(box => {
-                selectedServices.push(box.value);
+                selectedServices.push(box.closest('tr').cells[0].textContent);
             });
 
             if (mechanicName && selectedServices.length > 0) {
-                const totalPrice = document.getElementById('total-price').textContent;
+                const repairsTotal = document.getElementById('repairs-total').textContent;
+                const performanceTotal = document.getElementById('performance-total').textContent;
+                const cosmeticsTotal = document.getElementById('cosmetics-total').textContent;
+                const calloutsTotal = document.getElementById('callouts-total').textContent;
+                const totalBilling = document.getElementById('total-billing').textContent;
+
                 const message = {
-                    content: `**Mechanic:** ${mechanicName}\n**Services:** ${selectedServices.join(', ')}\n**Total Price:** ${totalPrice}`
+                    content: `**Mechanic:** ${mechanicName}\n**Services:** ${selectedServices.join(', ')}\n**Repairs in Shop Total:** ${repairsTotal}\n**Performance Total:** ${performanceTotal}\n**Cosmetics Total:** ${cosmeticsTotal}\n**Callouts Total:** ${calloutsTotal}\n**Total Billing Amount:** ${totalBilling}`
                 };
 
                 fetch(webhookUrl, {
@@ -128,7 +366,7 @@
                         document.querySelectorAll('.service-checkbox:checked').forEach(box => {
                             box.checked = false;
                         });
-                        document.getElementById('total-price').textContent = '$0.00';
+                        updateTotals();
                     } else {
                         alert('Failed to submit.');
                     }
@@ -138,11 +376,20 @@
                     alert('Failed to submit.');
                 });
             } else {
-                alert('Please enter your name and select at least one service.');
+                alert('Please select a mechanic and at least one service.');
             }
         }
 
-        document.addEventListener('DOMContentLoaded', loadServices);
+        document.addEventListener('DOMContentLoaded', () => {
+            loadServices(repairs, 'repairs-table');
+            loadServices(performance, 'performance-table');
+            loadServices(cosmetics, 'cosmetics-table');
+            loadServices(callouts, 'callouts-table');
+
+            document.querySelectorAll('.service-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', updateTotals);
+            });
+        });
     </script>
 </body>
 </html>
