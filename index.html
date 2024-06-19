@@ -41,12 +41,12 @@
             <tr>
                 <td>Oil Change</td>
                 <td>$100</td>
-                <td><input type="checkbox" class="service-checkbox" name="services" value="Oil Change"></td>
+                <td><input type="checkbox" class="service-checkbox" name="services" value="Oil Change" data-price="100"></td>
             </tr>
             <tr>
                 <td>Brake Repair</td>
                 <td>$150</td>
-                <td><input type="checkbox" class="service-checkbox" name="services" value="Brake Repair"></td>
+                <td><input type="checkbox" class="service-checkbox" name="services" value="Brake Repair" data-price="150"></td>
             </tr>
             <!-- Add more services here as needed -->
         </table>
@@ -57,6 +57,19 @@
         <button type="button" onclick="submitForm()">Submit</button>
     </form>
     <script>
+        const webhookUrl = 'https://discord.com/api/webhooks/1252941907848593491/HvG3yQ85h92n8SBORMgIYuDZlO6e5ljCu3yE-MqIENJL9tNMXzNypq1yL3EGNr0SHptU';
+
+        function calculateTotalPrice() {
+            const checkboxes = document.querySelectorAll('.service-checkbox');
+            let totalPrice = 0;
+            checkboxes.forEach(box => {
+                if (box.checked) {
+                    totalPrice += parseFloat(box.getAttribute('data-price'));
+                }
+            });
+            return `$${totalPrice.toFixed(2)}`;
+        }
+
         function submitForm() {
             const mechanicName = document.getElementById('mechanic-name').value;
             const selectedServices = [];
@@ -65,17 +78,17 @@
             });
 
             if (mechanicName && selectedServices.length > 0) {
-                const formData = {
-                    'mechanic-name': mechanicName,
-                    'services': selectedServices
+                const totalPrice = calculateTotalPrice();
+                const message = {
+                    content: `**Mechanic:** ${mechanicName}\n**Services:** ${selectedServices.join(', ')}\n**Total Price:** ${totalPrice}`
                 };
 
-                fetch('https://script.google.com/macros/s/AKfycbxqkgY5c_SA5rEXvH6u_QLr-EdfROEAGVk6CdRYmGASGr-23s5ioMW2adznZixvGGlT/execc', {
+                fetch(webhookUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(formData)
+                    body: JSON.stringify(message)
                 })
                 .then(response => {
                     if (response.ok) {
@@ -85,6 +98,7 @@
                         document.querySelectorAll('.service-checkbox:checked').forEach(box => {
                             box.checked = false;
                         });
+                        document.getElementById('total-price').textContent = '$0.00';
                     } else {
                         alert('Failed to submit.');
                     }
@@ -97,6 +111,17 @@
                 alert('Please enter your name and select at least one service.');
             }
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const checkboxes = document.querySelectorAll('.service-checkbox');
+            const totalPriceElement = document.getElementById('total-price');
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    totalPriceElement.textContent = calculateTotalPrice();
+                });
+            });
+        });
     </script>
 </body>
 </html>
