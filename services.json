@@ -1,10 +1,10 @@
 [
     {
         "service": "Oil Change",
-        "price": 100
+        "price": 10000
     },
     {
-        "service": "Brake Repair",
-        "price": 150
+        "service": "Repair",
+        "price": 30000
     }
 ]
