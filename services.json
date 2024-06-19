@@ -1,11 +1,15 @@
 [
     {
         "service": "Oil Change",
-        "price": 100
+        "price": 2000
     },
     {
-        "service": "Brake Repair",
-        "price": 150
+        "service": "Repair",
+        "price": 30000
+    },
+    {
+        "service": "Spare Tyre",
+        "price": 4000
     }
     // Add more services as needed
 ]
