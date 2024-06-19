@@ -28,10 +28,24 @@
     </style>
 </head>
 <body>
+    <img src="https://media.discordapp.net/attachments/1251301052180074506/1251479639075848242/Original-transparent.png?ex=667400bd&is=6672af3d&hm=08fc7508fbeaa8dac8877c0e8fd3848e212fa7f28df8ec440607f18051e0f552&=&format=webp&quality=lossless&width=592&height=592" alt="">
     <h1>Mechanic Shop Services</h1>
     <form id="price-form">
         <label for="mechanic-name">Mechanic:</label>
-        <input type="text" id="mechanic-name" name="mechanic-name" required>
+        <select id="mechanic-name" name="mechanic-name" required>
+            <option value="" disabled selected>Select Mechanic</option>
+            <option value="Mechanic 1">Duncan Smokey</option>
+            <option value="Mechanic 2">Kinana Ravencraft</option>
+            <option value="Mechanic 3">Edward Cocaine</option>
+            <option value="Mechanic 4">Jaylin Naidoo</option>
+            <option value="Mechanic 5">Kevin Green</option>
+            <option value="Mechanic 6">Vin Petrol</option>
+            <option value="Mechanic 7">Jack Skywalker</option>
+            <option value="Mechanic 8">Lyra Carter</option>
+            <option value="Mechanic 9">Veronica Harlow</option>
+            <option value="Mechanic 10">Jack Smith</option>
+        </select>
+        <br>
         <table id="price-list">
             <tr>
                 <th>Service</th>
@@ -40,6 +54,7 @@
             </tr>
             <!-- Services will be loaded here dynamically -->
         </table>
+            <br>
         <div>
             <label for="total-price">Total Price: </label>
             <span id="total-price">$0.00</span>
