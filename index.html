@@ -1,483 +1,239 @@
-<!-- https://tebex.store/shop/ -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mechanic Shop Billing</title>
+    
     <style>
         body {
-            background:#2d2d2d;
-            justify-content: center;
-            align-items:center;
-            flex-wrap:wrap;
-            padding:0;
-            margin:0;
-            font-family: sans-serif;
-            color:#FFF;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            text-align: center;
+            padding: 20px;
         }
 
-        .tab {
-            overflow: hidden;
-            border: 1px solid #ccc;
-            background-color: #f1f1f1;
+        .service-container {
+            margin: auto;
+            width: 90%;
+            max-width: 800px;
+        }
+
+        .mechanic-select {
             margin-bottom: 20px;
         }
 
-        .tab button {
-            background-color: inherit;
-            float: left;
-            border: none;
-            outline: none;
-            cursor: pointer;
-            padding: 14px 16px;
-            transition: 0.3s;
-            font-size: 17px;
+        .mechanic-select select, .mechanic-select button {
+            padding: 10px;
+            margin-right: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
         }
-        .tab button:hover {
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .tab-button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #ccc;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .tab-button:hover, .tab-button.active {
             background-color: #ddd;
         }
-        .tab button.active {
-            background-color: #ccc;
-        }
-        .tabcontent {
+
+        .tab-content {
             display: none;
-            padding: 6px 12px;
-            border-top: none;
+            background-color: white;
+            padding: 20px;
         }
-        .table-container {
-            margin-top: 10px;
+
+        .tab-content.active {
+            display: block;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 10px;
         }
+
         th, td {
             border: 1px solid #ddd;
             padding: 8px;
+            text-align: left;
         }
+
         th {
             background-color: #f2f2f2;
         }
-        .totals {
-            width: 100%;
-            margin-top: 20px;
-            display: flex;
-            flex-wrap: wrap;
-        }
-        .total-item {
-            flex: 1;
-            min-width: 200px;
-            margin: 10px;
+        .imageheader {
+            padding: 20px;
+            /* background-color: #333; */
+            color: white;
+            text-align: center;
+            display: flex;  /* Aligns children (images) in a row */
+            justify-content: center; /* Center align the images horizontally */
+            align-items: center; /* Aligns items vertically in the center */
         }
 
-        
-    /* mech-box and button */
-    .mech-box, .button {
-        padding: 0.6em 2em;
-        border: none;
-        outline: none;
-        color: rgb(255, 255, 255);
-        background: #111;
-        cursor: pointer;
-        position: relative;
-        z-index: 0;
-        border-radius: 10px;
-        user-select: none;
-        -webkit-user-select: none;
-        touch-action: manipulation;
-    }
-
-    .mech-box:before, .button:before {
-        content: "";
-        background: linear-gradient(
-            45deg,
-            #ff0000,
-            #ff7300,
-            #fffb00,
-            #48ff00,
-            #00ffd5,
-            #002bff,
-            #7a00ff,
-            #ff00c8,
-            #ff0000
-        );
-        position: absolute;
-        top: -2px;
-        left: -2px;
-        background-size: 400%;
-        z-index: -1;
-        filter: blur(5px);
-        -webkit-filter: blur(5px);
-        width: calc(100% + 4px);
-        height: calc(100% + 4px);
-        animation: glowing-button 20s linear infinite;
-        transition: opacity 0.3s ease-in-out;
-        border-radius: 10px;
-    }
-
-    @keyframes glowing-button {
-        0% {
-            background-position: 0 0;
+        .imageheader img {
+            max-height: 100px; /* Restrict maximum height */
+            width: auto;  /* Maintain aspect ratio */
+            margin: 0 10px; /* Adds space between the images */
         }
-        50% {
-            background-position: 400% 0;
-        }
-        100% {
-            background-position: 0 0;
-        }
-    }
 
-    .mech-box:after, .button:after {
-        z-index: -1;
-        content: "";
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        background: #222;
-        left: 0;
-        top: 0;
-        border-radius: 10px;
-    }
+        footer {
+            padding: 20px;
+            /* background-color: #333; */
+            color: white;
+            text-align: center;
+            display: flex;  /* Aligns children (images) in a row */
+            justify-content: center; /* Center align the images horizontally */
+            align-items: center; /* Aligns items vertically in the center */
+        }
 
-    .highlight {
-        background-color: orange; /* Light red background for highlighting */
-    }
-</style>
+        footer img {
+            max-height: 200px; /* Restrict maximum height */
+            width: auto;  /* Maintain aspect ratio */
+            margin: 0 10px; /* Adds space between the images */
+        }
+
+    </style>
 </head>
 <body>
+    <div class="imageheader">
+        <img src="https://media.discordapp.net/attachments/1251686992140566558/1258382011446464664/fastcustoms.png?ex=66a6d253&is=66a580d3&hm=8738edf6b44f78a19d38ac05fa1ad94db8b019cb89a39a3d4e66b49fd83469ee&format=webp&quality=lossless&width=576&height=288" alt="Fast Customs Logo">
+    </div>
+
     <h1>Mechanic Shop Services</h1>
-    <div class="totals">
-        <div class="total-item">
-            <label>Repairs in Shop Total: </label>
-            <span id="repairs-total">$0</span>
-        </div>
-        <div class="total-item">
-            <label>Performance Total: </label>
-            <span id="performance-total">$0</span>
-        </div>
-        <div class="total-item">
-            <label>Cosmetics Total: </label>
-            <span id="cosmetics-total">$0</span>
-        </div>
-        <div class="total-item">
-            <label>Callouts Total: </label>
-            <span id="callouts-total">$0</span>
-        </div>
-        <div class="total-item">
-            <label>Total Billing Amount: </label>
-            <span id="total-billing">$0</span>
-        </div>
-    </div>
-    <br>
-    <div>
-        <!-- <label for="mechanic-name">Select Mechanic:</label> -->
-            <select class="mech-box" id="mechanic-name" name="mechanic-name" required>
+
+    <div class="service-container">
+        <div class="mechanic-select">
+            <select id="mechanic-name">
                 <option value="" disabled selected>Select Mechanic</option>
-                <option value="Duncan Smokey">Duncan Smokey</option>
                 <option value="Kinana Ravencraft">Kinana Ravencraft</option>
-                <option value="Edward Cocaine">Edward Cocaine</option>
-                <option value="Jaylin Naidoo">Jaylin Naidoo</option>
+                <option value="Duncan Smokey">Duncan Smokey</option>
+                <option value="Mackenzi Paige">Mackenzi Paige</option>
                 <option value="Kevin Green">Kevin Green</option>
-                <option value="Vin Petrol">Vin Petrol</option>
-                <option value="Jack Skywalker">Jack Skywalker</option>
-                <option value="Lyra Carter">Lyra Carter</option>
-                <option value="Veronica Harlow">Veronica Harlow</option>
-                <option value="Jack Smith">Jack Smith</option>
             </select>
-        &emsp;
-        <button class="button" type="button" onclick="submitForm()">Submit</button>
-        &emsp;
-        <button class="button" type="button" onclick="copyTotalBilling()">Copy</button>
-    </div>
+            <button onclick="submitForm()">Submit</button>
+        </div>
 
-    <br>
+        <div class="tabs">
+            <button class="tab-button active" onclick="openTab('servicing')">Servicing in Shop</button>
+            <button class="tab-button" onclick="openTab('tuning')">Tuning</button>
+            <button class="tab-button" onclick="openTab('callouts')">Callouts</button>
+            <!-- <button class="tab-button" onclick="openTab('cosmetics')">Cosmetics</button> -->
+        </div>
 
-    <div class="tab">
-        <button class="tablinks active" onclick="openTab(event, 'repairs')">Repairs in Shop</button>
-        <button class="tablinks" onclick="openTab(event, 'performance')">Performance</button>
-        <button class="tablinks" onclick="openTab(event, 'cosmetics')">Cosmetics</button>
-        <button class="tablinks" onclick="openTab(event, 'callouts')">Callouts</button>
-    </div>
-
-    <div id="repairs" class="tabcontent" style="display: block;">
-        <div class="table-container">
-            <table id="repairs-table">
-                <tr>
-                    <th>Service</th>
-                    <th>Price</th>
-                    <th>Select</th>
-                </tr>
+        <div id="servicing" class="tab-content active">
+            <table>
+                <tr><th>Service</th><th>Price</th><th>Select</th></tr>
+                <!-- Data rows inserted by JavaScript -->
+            </table>
+        </div>
+        <div id="tuning" class="tab-content">
+            <table>
+                <tr><th>Service</th><th>Price</th><th>Select</th></tr>
+                <!-- Data rows inserted by JavaScript -->
+            </table>
+        </div>
+        <div id="callouts" class="tab-content">
+            <table>
+                <tr><th>Service</th><th>Price</th><th>Select</th></tr>
+                <!-- Data rows inserted by JavaScript -->
             </table>
         </div>
     </div>
 
-    <div id="performance" class="tabcontent">
-        <div class="table-container">
-            <table id="performance-table">
-                <tr>
-                    <th>Service</th>
-                    <th>Price</th>
-                    <th>Select</th>
-                </tr>
-            </table>
-        </div>
-    </div>
-
-    <div id="cosmetics" class="tabcontent">
-        <div class="table-container">
-            <table id="cosmetics-table">
-                <tr>
-                    <th>Service</th>
-                    <th>Price</th>
-                    <th>Select</th>
-                </tr>
-            </table>
-        </div>
-    </div>
-
-    <div id="callouts" class="tabcontent">
-        <div class="table-container">
-            <table id="callouts-table">
-                <tr>
-                    <th>Service</th>
-                    <th>Price</th>
-                    <th>Select</th>
-                </tr>
-            </table>
-        </div>
-    </div>
+    <!-- <p style="color: black;">RedRavenRP<br></p> -->
+    <!-- <br> -->
+    <footer>
+        <!-- <img src="https://cdn.discordapp.com/attachments/1251686992140566558/1251687135082446859/RedRaven_2KT.png?ex=66a6dafc&is=66a5897c&hm=598e0e542127ec6547042941c0fedbd0958906b1351af15733490238fc5049f3&" alt="Red Raven Logo"> -->
+        <img src="https://cdn.discordapp.com/attachments/1251686992140566558/1251687133459251332/redravenName_05KT.png?ex=66a6dafb&is=66a5897b&hm=2b9f1b886c985e9b23b1b62bca3f0fcfe5d50d1a563fc976af21faf2999edbfa&" alt="Red Raven Logo">
+    </footer>
     
+    
+
     <script>
-        const webhookUrl = 'https://discord.com/api/webhooks/1252941907848593491/HvG3yQ85h92n8SBORMgIYuDZlO6e5ljCu3yE-MqIENJL9tNMXzNypq1yL3EGNr0SHptU';
+       const services = {
+    "servicing": [
+            {"service": "Suspension",       "price": 500},
+            {"service": "Tyres",            "price": 800},
+            {"service": "Engine Oil",       "price": 500},
+            {"service": "Clutch",           "price": 500},
+            {"service": "Airfilter",        "price": 500},
+            {"service": "Spark Plugs",      "price": 800},
+            {"service": "Brake Pads",       "price": 800}
+        // More services...
+    ],
+    "tuning": [
+            {"service": "Tuning Items (Each)",  "price": 1000},
+            {"service": "NOS installation",     "price": 2000},
+            {"service": "NOS Refill",           "price": 500},
+            {"service": "Dino Test",            "price": 300}
+        // More services...
+    ],
+    "callouts": [
+            {"service": "City",         "price": 1000},
+            {"service": "Sandy",        "price": 3000},
+            {"service": "Paleto",       "price": 5000},
+            {"service": "Repair Kit",   "price": 800}
+        // More services...
+    ]
+};
 
-        const repairs = [
-            {"service": "Body Repair","price": 15000},
-            {"service": "Engine Repair","price": 15000},
-            {"service": "Spare Tires","price": 4000},
-            {"service": "Duct Tape","price": 10000},
-            {"service": "Oil Level","price": 2000},
-            {"service": "Axle Shaft","price": 2000},
-            {"service": "Spark Plugs","price": 2000},
-            {"service": "Car Battery","price": 2000},
-            {"service": "Fuel Tank", "price": 2000},
-        ];
-        const performance = [
-            {"service": "Supercharger Turbo", "price": 50000},
-            {"service": "Tier 4 Engine", "price": 80000},
-            {"service": "Tier 3 Transmission", "price": 70000},
-            {"service": "Tier 3 Brakes", "price": 50000},
-            {"service": "Spray", "price": 15000},
-            {"service": "Tint", "price": 15000},
-            {"service": "Neon Controller", "price": 5000},
-            {"service": "Drift Tires", "price": 20000},
-            {"service": "Tier 1 Engine", "price": 20000},
-            {"service": "Tier 2 Engine", "price": 40000},
-            {"service": "Tier 3 Engine", "price": 60000},
-            {"service": "Tier 5 Engine", "price": 80000},
-            {"service": "Tier 1 Transmission", "price": 30000},
-            {"service": "Tier 2 Transmission", "price": 50000},
-            {"service": "Tier 4 Transmission", "price": 70000},
-            {"service": "Tier 1 Brakes", "price": 10000},
-            {"service": "Tier 2 Brakes", "price": 30000},
-            {"service": "Armor (Investigating)", "price": 0},
-            {"service": "Tier 1 Suspension", "price": 25000},
-            {"service": "Tier 2 Suspension", "price": 45000},
-            {"service": "Tier 3 Suspension", "price": 65000},
-            {"service": "Tier 4 Suspension", "price": 85000},
-            {"service": "Bulletproof tires (Investigating)", "price": 0},
-            {"service": "Drive Shaft", "price": 20000},
-            {"service": "Cylinder Head", "price": 20000},
-            {"service": "Battery Cables", "price": 20000},
-            {"service": "Fuel Tank", "price": 20000},
-            {"service": "NOS bottle", "price": 60000},
-            {"service": "NOS Refill", "price": 30000},
-            {"service": "NOS Color injector", "price": 10000}
-        ];
-        const cosmetics = [
-            {"service": "Harness", "price": 20000},
-            {"service": "Xenon", "price": 10000},
-            {"service": "Hood", "price": 15000},
-            {"service": "Roof", "price": 15000},
-            {"service": "Spoiler", "price": 15000},
-            {"service": "Bumper", "price": 15000},
-            {"service": "Skirts", "price": 15000},
-            {"service": "Exhaust", "price": 20000},
-            {"service": "Seats", "price": 15000},
-            {"service": "Livery", "price": 25000},
-            {"service": "Tire smoke", "price": 15000},
-            {"service": "Horn", "price": 10000},
-            {"service": "Internal Cosmetics", "price": 15000},
-            {"service": "Exterior Cosmetics", "price": 15000},
-            {"service": "Custom plates", "price": 15000},
-            {"service": "Underglow", "price": 15000},
-            {"service": "Wheels", "price": 15000},
-            {"service": "Custom Plates", "price": 15000},
-            {"service": "Engine Swope", "price": 20000}
-        ];
-        const callouts = [
-            {"service": "City", "price": 40000},
-            {"service": "Sandy", "price": 60000},
-            {"service": "Paleto", "price": 80000}
-        ];
-
-        function loadServices(services, tableId) {
-            const table = document.getElementById(tableId);
-            services.forEach(service => {
-                const row = table.insertRow();
-                const serviceCell = row.insertCell(0);
-                const priceCell = row.insertCell(1);
-                const selectCell = row.insertCell(2);
-
-                serviceCell.textContent = service.service;
-                priceCell.textContent = `$${service.price}`;
-                selectCell.innerHTML = `<input type="checkbox" class="service-checkbox" data-price="${service.price}">`;
-
-                // Highlight specific services
-                if (service.service === "Supercharger Turbo" ||
-                    service.service === "Tier 4 Engine" ||
-                    service.service === "Tier 3 Brakes" ||
-                    service.service === "Tier 3 Transmission" ||
-                    service.service === "Xenon" ||
-                    service.service === "Harness") {
-                    row.classList.add('highlight');
-                }
-            });
-        }
-
-        function calculateTotal(selector, totalElementId) {
-            const checkboxes = document.querySelectorAll(selector);
-            let total = 0;
-            checkboxes.forEach(box => {
-                if (box.checked) {
-                    total += parseFloat(box.getAttribute('data-price'));
-                }
-            });
-            document.getElementById(totalElementId).textContent = `$${total.toFixed(2)}`;
-            return total;
-        }
-
-        function updateTotals() {
-            const repairsTotal = calculateTotal('#repairs-table .service-checkbox', 'repairs-total');
-            const performanceTotal = calculateTotal('#performance-table .service-checkbox', 'performance-total');
-            const cosmeticsTotal = calculateTotal('#cosmetics-table .service-checkbox', 'cosmetics-total');
-            const calloutsTotal = calculateTotal('#callouts-table .service-checkbox', 'callouts-total');
-            const totalBilling = repairsTotal + performanceTotal + cosmeticsTotal + calloutsTotal;
-            // document.getElementById('total-billing').textContent = `$${totalBilling.toFixed(2)}`;
-
-            document.getElementById('repairs-total').textContent = `$${repairsTotal}`;
-            document.getElementById('performance-total').textContent = `$${performanceTotal}`;
-            document.getElementById('cosmetics-total').textContent = `$${cosmeticsTotal}`;
-            document.getElementById('callouts-total').textContent = `$${calloutsTotal}`;
-            document.getElementById('total-billing').textContent = `$${totalBilling}`;
-            // document.getElementById('total-billing').textContent = `$${totalBilling.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
-        }
-
-        function openTab(evt, tabName) {
-            // Hide all tab contents
-            const tabcontents = document.getElementsByClassName('tabcontent');
-            for (let i = 0; i < tabcontents.length; i++) {
-                tabcontents[i].style.display = 'none';
+document.addEventListener("DOMContentLoaded", function() {
+    for (let key in services) {
+        const tab = document.getElementById(key);
+        const table = tab.querySelector('table');
+        clearTable(table); // Function call to clear the table
+        services[key].forEach(service => {
+            const row = table.insertRow();
+            let inputHtml = `<input type="checkbox">`;
+            if (service.service === "Tuning Items (Each)") {
+                inputHtml = `<input type="number" min="0" value="0" class="tuning-input" oninput="updateTuningPrice(this, ${service.price})">`;
             }
-
-            // Deactivate all tab buttons
-            const tablinks = document.getElementsByClassName('tablinks');
-            for (let i = 0; i < tablinks.length; i++) {
-                tablinks[i].classList.remove('active');
-            }
-
-            // Show the selected tab content and activate the button
-            document.getElementById(tabName).style.display = 'block';
-            evt.currentTarget.classList.add('active');
-
-            // Update totals for the visible tab
-            switch (tabName) {
-                case 'repairs':
-                    updateTotals('#repairs-table .service-checkbox', 'repairs-total');
-                    break;
-                case 'performance':
-                    updateTotals('#performance-table .service-checkbox', 'performance-total');
-                    break;
-                case 'cosmetics':
-                    updateTotals('#cosmetics-table .service-checkbox', 'cosmetics-total');
-                    break;
-                case 'callouts':
-                    updateTotals('#callouts-table .service-checkbox', 'callouts-total');
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        function submitForm() {
-            const mechanicName = document.getElementById('mechanic-name').value;
-            const selectedServices = [];
-            document.querySelectorAll('.service-checkbox:checked').forEach(box => {
-                selectedServices.push(box.closest('tr').cells[0].textContent);
-            });
-
-            if (mechanicName && selectedServices.length > 0) {
-                const repairsTotal = document.getElementById('repairs-total').textContent;
-                const performanceTotal = document.getElementById('performance-total').textContent;
-                const cosmeticsTotal = document.getElementById('cosmetics-total').textContent;
-                const calloutsTotal = document.getElementById('callouts-total').textContent;
-                const totalBilling = document.getElementById('total-billing').textContent;
-
-                const message = {
-                    content: `**Mechanic:** ${mechanicName}\n**Services:** ${selectedServices.join(', ')}\n**Repairs in Shop Total:** ${repairsTotal}\n**Performance Total:** ${performanceTotal}\n**Cosmetics Total:** ${cosmeticsTotal}\n**Callouts Total:** ${calloutsTotal}\n**Total Billing Amount:** ${totalBilling}`
-                };
-
-                fetch(webhookUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(message)
-                })
-                .then(response => {
-                    if (response.ok) {
-                        alert('Submitted successfully!');
-                        // Optionally clear form fields or perform other actions after successful submission
-                        document.getElementById('mechanic-name').value = '';
-                        document.querySelectorAll('.service-checkbox:checked').forEach(box => {
-                            box.checked = false;
-                        });
-                        updateTotals();
-                    } else {
-                        alert('Failed to submit.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error submitting form:', error);
-                    alert('Failed to submit.');
-                });
-            } else {
-                alert('Please select a mechanic and at least one service.');
-            }
-        }
-
-        function copyTotalBilling() {
-            const totalBilling = document.getElementById('total-billing').textContent;
-            const tempInput = document.createElement('input');
-            tempInput.value = totalBilling.replace(/\D/g, ''); // Remove non-digit characters
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempInput);
-            alert('Copied to clipboard: ' + totalBilling);
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            loadServices(repairs, 'repairs-table');
-            loadServices(performance, 'performance-table');
-            loadServices(cosmetics, 'cosmetics-table');
-            loadServices(callouts, 'callouts-table');
-
-            document.querySelectorAll('.service-checkbox').forEach(checkbox => {
-                checkbox.addEventListener('change', updateTotals);
-            });
+            row.innerHTML = `<td>${service.service}</td><td>R<span class="price">${service.price}</span></td><td>${inputHtml}</td>`;
         });
+    }
+});
+
+function clearTable(table) {
+    while (table.rows.length > 1) { // assumes there is a header row, so it leaves one row
+        table.deleteRow(1);
+    }
+}
+
+function updateTuningPrice(input, pricePerItem) {
+    const total = input.value * pricePerItem;
+    input.closest('tr').querySelector('.price').textContent = total;
+}
+
+function openTab(tabName) {
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.remove('active');
+        if (button.textContent.includes(tabName)) {
+            button.classList.add('active');
+        }
+    });
+    document.getElementById(tabName).classList.add('active');
+}
+
+function submitForm() {
+    // Logic to submit the selected services
+}
+
     </script>
 </body>
 </html>
